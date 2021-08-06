@@ -121,6 +121,8 @@ class BlackJackController:
             print()
             print("Dealer hits!")
             self.table.dealer.hit(deck)
+            self.display_driver.display()
+            self.any_key()
 
     def play_game(self):
         # Prime the loop and start the first game.

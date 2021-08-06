@@ -100,7 +100,7 @@ class Hand:
 
     def render_dealer_hand(self, blind: bool = False) -> str:
         # __ = (5/5) [ 1 2 3 4 5 ]
-        score = self.get_total_value()
+        score = self.get_total_value(blind)
         cards = self.render_cards(blind)
         num_cards = self.get_num_cards()
         return f'{score:2d} = ({num_cards}/5) {cards}'
