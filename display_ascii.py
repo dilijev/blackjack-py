@@ -1,6 +1,10 @@
 class AsciiGridDisplay(object):
     def __init__(self, rows: int, columns: int) -> None:
         super().__init__()
+        self.grid = None
+        self.clear(rows, columns)
+
+    def clear(self, rows: int, columns: int) -> None:
         self.grid = []
         # TODO remove debugging edges
         # self.grid.append('v' * (columns + 2))
