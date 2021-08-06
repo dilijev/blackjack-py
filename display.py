@@ -46,6 +46,8 @@ class BlackJackTableAsciiGridDisplayDriver(object):
         self.game = game
         self.grid_display = None
 
+        self.needs_render = True
+
         self.start_player_field = 0
         self.width_player_field = 0
         self.start_player_connector = 0
@@ -89,10 +91,17 @@ class BlackJackTableAsciiGridDisplayDriver(object):
         self.start_bet_field = \
             self.width_player_field + \
             BlackJackTableAsciiGridDisplayDriver.PLAYER_CONNECTOR + \
-            BlackJackTableAsciiGridDisplayDriver.WIDTH_LEFT_BORDER + \
-            BlackJackTableAsciiGridDisplayDriver.WIDTH_MONEY_SIGN
+            BlackJackTableAsciiGridDisplayDriver.WIDTH_LEFT_BORDER
         # TODO calculate max bet length from hands' bets
         self.width_bet_field = 4
+
+        self.start_player_status = \
+            self.width_player_field + \
+            BlackJackTableAsciiGridDisplayDriver.PLAYER_CONNECTOR + \
+            BlackJackTableAsciiGridDisplayDriver.WIDTH_LEFT_BORDER + \
+            BlackJackTableAsciiGridDisplayDriver.WIDTH_MONEY_SIGN + \
+            self.width_bet_field + \
+            BlackJackTableAsciiGridDisplayDriver.WIDTH_STATUS_SPACER
 
         self.table_divider_column = \
             self.width_player_field + \
@@ -110,9 +119,21 @@ class BlackJackTableAsciiGridDisplayDriver(object):
             BlackJackTableAsciiGridDisplayDriver.WIDTH_STATUS_SPACER + \
             BlackJackTableAsciiGridDisplayDriver.WIDTH_MAX_HAND_DISPLAY + \
             BlackJackTableAsciiGridDisplayDriver.WIDTH_HAND_STATS + \
+            BlackJackTableAsciiGridDisplayDriver.WIDTH_GAP + \
             BlackJackTableAsciiGridDisplayDriver.WIDTH_DEALER_HAND_STATS + \
-            BlackJackTableAsciiGridDisplayDriver.WIDTH_MAX_DEALER_DISPLAY + \
-            BlackJackTableAsciiGridDisplayDriver.WIDTH_GAP + 2
+            BlackJackTableAsciiGridDisplayDriver.WIDTH_MAX_DEALER_DISPLAY + 2
+
+        self.start_dealer_status = \
+            self.width_player_field + \
+            BlackJackTableAsciiGridDisplayDriver.PLAYER_CONNECTOR + \
+            BlackJackTableAsciiGridDisplayDriver.WIDTH_LEFT_BORDER + \
+            BlackJackTableAsciiGridDisplayDriver.WIDTH_MONEY_SIGN + \
+            self.width_bet_field + \
+            BlackJackTableAsciiGridDisplayDriver.WIDTH_STATUS_SPACER + \
+            BlackJackTableAsciiGridDisplayDriver.WIDTH_MAX_HAND_DISPLAY + \
+            BlackJackTableAsciiGridDisplayDriver.WIDTH_HAND_STATS + \
+            BlackJackTableAsciiGridDisplayDriver.WIDTH_GAP + \
+                0
 
         self.dealer_name_start = \
             self.width_player_field + \
@@ -123,9 +144,9 @@ class BlackJackTableAsciiGridDisplayDriver(object):
             BlackJackTableAsciiGridDisplayDriver.WIDTH_STATUS_SPACER + \
             BlackJackTableAsciiGridDisplayDriver.WIDTH_MAX_HAND_DISPLAY + \
             BlackJackTableAsciiGridDisplayDriver.WIDTH_HAND_STATS + \
+            BlackJackTableAsciiGridDisplayDriver.WIDTH_GAP + \
             BlackJackTableAsciiGridDisplayDriver.WIDTH_DEALER_HAND_STATS + \
             BlackJackTableAsciiGridDisplayDriver.WIDTH_MAX_DEALER_DISPLAY + \
-            BlackJackTableAsciiGridDisplayDriver.WIDTH_GAP + \
             BlackJackTableAsciiGridDisplayDriver.WIDTH_RIGHT_BORDER
 
         # TODO Change len('Dealer') to len(dealer.get_name()) -- move get_name() to Person
@@ -141,9 +162,9 @@ class BlackJackTableAsciiGridDisplayDriver(object):
             BlackJackTableAsciiGridDisplayDriver.WIDTH_STATUS_SPACER + \
             BlackJackTableAsciiGridDisplayDriver.WIDTH_MAX_HAND_DISPLAY + \
             BlackJackTableAsciiGridDisplayDriver.WIDTH_HAND_STATS + \
+            BlackJackTableAsciiGridDisplayDriver.WIDTH_GAP + \
             BlackJackTableAsciiGridDisplayDriver.WIDTH_DEALER_HAND_STATS + \
             BlackJackTableAsciiGridDisplayDriver.WIDTH_MAX_DEALER_DISPLAY + \
-            BlackJackTableAsciiGridDisplayDriver.WIDTH_GAP + \
             BlackJackTableAsciiGridDisplayDriver.WIDTH_RIGHT_BORDER + \
             self.dealer_name_length
 
@@ -210,14 +231,71 @@ class BlackJackTableAsciiGridDisplayDriver(object):
             column = self.dealer_name_start,
             text=dealer_name)
 
+    def render_player_hands(self) -> None:
+        index = 0
+        for player in self.game.players:
+            for hand in [player.hand]:
+                status = hand.render_player_hand()
+                row = 1 + index * BlackJackTableAsciiGridDisplayDriver.HEIGHT_PLAYER
+                self.grid_display.set_text(
+                    row=row, column=self.start_player_status,
+                    text=status)
+
+    def render_dealer_hand(self) -> None:
+        hand = self.game.dealer.hand
+        status = hand.render_player_hand()
+        row = self.dealer_row
+        self.grid_display.set_text(
+            row=row, column=self.start_dealer_status,
+            text=status)
+
+    def render_pools(self) -> None:
+        for x in range(len(self.game.players)):
+            # player = self.game.players[x]
+            # TODO get money value from player
+            money = 0
+            money_string = f'${money:4d}'
+            row = 2 + x * BlackJackTableAsciiGridDisplayDriver.HEIGHT_PLAYER
+            self.grid_display.set_text(
+                row=row, column=self.start_player_field,
+                text=money_string)
+
+    def render_bets(self) -> None:
+        for x in range(len(self.game.players)):
+            # TODO get bet value from player's hands
+            money = 0
+            money_string = f'${money:4d}'
+            row = 1 + x * BlackJackTableAsciiGridDisplayDriver.HEIGHT_PLAYER
+            self.grid_display.set_text(
+                row=row, column=self.start_bet_field,
+                text=money_string)
+
+    def render_double_down(self) -> None:
+        for x in range(len(self.game.players)):
+            # TODO get double-down bet value from player's hands
+            # TODO change to no display if there's no double-down
+            money = 0
+            money_string = f'${money:4d}'
+            row = 2 + x * BlackJackTableAsciiGridDisplayDriver.HEIGHT_PLAYER
+            self.grid_display.set_text(
+                row=row, column=self.start_bet_field,
+                text=money_string)
+
     def render(self) -> None:
         self.configure()
         self.render_boxes()
         self.render_lines()
         self.render_names()
-
+        self.render_player_hands()
+        self.render_dealer_hand()
+        self.render_pools()
+        self.render_bets()
+        self.render_double_down()
 
     def display(self) -> None:
+        # TODO shouldn't always be necessary but for now we always need it
+        if self.needs_render:
+            self.render()
         self.grid_display.display()
 
     # TODO implement updates instead of full redraws,

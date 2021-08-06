@@ -14,6 +14,8 @@ class PlayingCard:
     def get_num_value(self) -> int:
         if self.value == "A":
             return 1
+        elif self.value == "X":
+            return 10
         elif self.value == "J":
             return 10
         elif self.value == "Q":
@@ -35,7 +37,7 @@ class Deck:
 
     def init_deck(self) -> None:
         suits = ["hearts", "diamonds", "spades", "clubs"]
-        values = ["A", 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K"]
+        values = ["A", 2, 3, 4, 5, 6, 7, 8, 9, "X", "J", "Q", "K"]
         for x in range(5):
             for suit in suits:
                 for value in values:
@@ -72,7 +74,7 @@ class Hand:
     def get_num_cards(self) -> int:
         return len(self.cards)
 
-    def render_hand(self) -> str:
+    def render_cards(self) -> str:
         hand = '[ '
         for card in self.cards:
             hand += str(card.get_value()) + ' '
@@ -80,6 +82,20 @@ class Hand:
             hand += '  '
         hand += ']'
         return hand
+
+    def render_player_hand(self) -> str:
+        # [ 1 2 3 4 5 ] (5/5) = __
+        score = self.get_total_value()
+        cards = self.render_cards()
+        num_cards = self.get_num_cards()
+        return f'{cards} ({num_cards}/5) = {score:2d}'
+
+    def render_dealer_hand(self) -> str:
+        # __ = (5/5) [ 1 2 3 4 5 ]
+        score = self.get_total_value()
+        cards = self.render_cards()
+        num_cards = self.get_num_cards()
+        return f'{score:2d} = ({num_cards}/5) {cards}'
 
     def add_card(self, deck) -> None:
         """draw one card from the deck and append them to self.cards"""
