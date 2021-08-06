@@ -31,8 +31,8 @@ class BlackJackTableAsciiGridDisplayDriver(object):
     WIDTH_MONEY_SIGN = 1                    # '$'
     # dynamic max bet length
     WIDTH_STATUS_SPACER = 1
-    WIDTH_MAX_HAND_DISPLAY = 4 + 5 + 4      # '[ 1 2 3 4 5 ]'
-    WIDTH_HAND_STATS = 3 + 1 + 2 + 5        # ' (5/5) = __'
+    WIDTH_MAX_HAND_DISPLAY = 13             # '[ 1 2 3 4 5 ]'
+    WIDTH_HAND_STATS = 11                   # ' (5/5) = __'
     # sanity check: above two fields (and below two) total 24
     WIDTH_DEALER_HAND_STATS = WIDTH_HAND_STATS
     WIDTH_MAX_DEALER_DISPLAY = WIDTH_MAX_HAND_DISPLAY
