@@ -40,12 +40,15 @@ class BlackJackTableAsciiGridDisplayDriver(object):
     WIDTH_RIGHT_BORDER = WIDTH_LEFT_BORDER  # ' | '
     # dynamic dealer name length
 
-    def __init__(self, game: BlackjackGame):
+    HEIGHT_PLAYER = 3
+
+    def __init__(self, game: BlackjackGame) -> None:
         self.game = game
         self.grid_display = None
 
         self.start_player_field = 0
         self.width_player_field = 0
+        self.start_player_connector = 0
         self.start_bet_field = 0
         self.width_bet_field = 0
         self.start_player_status = 0
@@ -75,6 +78,9 @@ class BlackJackTableAsciiGridDisplayDriver(object):
 
         self.start_player_field = 0
         self.width_player_field = max(max_player_name_length, max_player_money_pool_value)
+
+        self.start_player_connector = self.width_player_field + \
+            BlackJackTableAsciiGridDisplayDriver.PLAYER_CONNECTOR
 
         self.table_left = \
             self.width_player_field + \
@@ -167,9 +173,16 @@ class BlackJackTableAsciiGridDisplayDriver(object):
             row=0, column=0, width=self.width_player_field)
         for x in range(len(self.game.players)):
             # line after every player
-            row = (x + 1) * 3
+            row = (x + 1) * BlackJackTableAsciiGridDisplayDriver.HEIGHT_PLAYER
             self.grid_display.draw_horizontal_line(
                 row=row, column=0, width=self.width_player_field)
+            # draw player connector (graphically connect two hands belonging to one player)
+            self.grid_display.draw_vertical_line(
+                row=(x * BlackJackTableAsciiGridDisplayDriver.HEIGHT_PLAYER) + 1,
+                column=self.start_player_connector - 1,
+                height=2,  # TODO change to calculation involving hands
+                character=':'
+            )
 
         # dealer area top line spacer
         self.grid_display.draw_horizontal_line(
@@ -185,7 +198,7 @@ class BlackJackTableAsciiGridDisplayDriver(object):
         for x in range(len(self.game.players)):
             player = self.game.players[x]
             name = player.get_name()
-            row = 1 + x * 3
+            row = 1 + x * BlackJackTableAsciiGridDisplayDriver.HEIGHT_PLAYER
             self.grid_display.set_text(
                 row=row, column = self.start_player_field, text=name)
         
