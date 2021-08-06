@@ -14,3 +14,8 @@ class BlackJackTable:
         player = Player(self.deck, 'Player1')
         self.players.append(player)
         self.dealer = Dealer(self.deck)
+
+    def provided_settings(self, players: "list[Player]", dealer: Dealer) -> None:
+        self.deck.init_deck()
+        self.players = players
+        self.dealer = dealer

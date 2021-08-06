@@ -18,6 +18,7 @@ class BlackJackController:
         if answers == None:
             answers = ['y', 'n']
         answers_string = '/'.join(answers)
+
         good = False
         while not good:
             user_response = str(input(f"{prompt} [{answers_string}] ")).strip().lower()
