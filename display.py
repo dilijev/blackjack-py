@@ -47,6 +47,7 @@ class BlackJackTableAsciiGridDisplayDriver(object):
         self.grid_display = None
 
         self.needs_render = True
+        self.dealer_blind = True
 
         self.start_player_field = 0
         self.width_player_field = 0
@@ -242,8 +243,7 @@ class BlackJackTableAsciiGridDisplayDriver(object):
                     text=status)
 
     def render_dealer_hand(self) -> None:
-        hand = self.table.dealer.hand
-        status = hand.render_player_hand()
+        status = self.table.dealer.render_hand()
         row = self.dealer_row
         self.grid_display.set_text(
             row=row, column=self.start_dealer_status,

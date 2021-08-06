@@ -85,6 +85,17 @@ class BlackJackController:
                 playing = False
 
     def dealer_turn(self, deck):
+        print()
+        print("Dealer's Turn")
+        self.display_driver.display()
+        self.any_key()
+
+        print()
+        print("Dealer flips up their face-down card.")
+        self.table.dealer.unblind_hand()
+        self.display_driver.display()
+        self.any_key()
+
         dealer_playing = True
         while dealer_playing:
             dealer_score = self.table.dealer.report_score()
@@ -92,9 +103,23 @@ class BlackJackController:
             if dealer_score >= 17:
                 if dealer_score > 21:
                     self.table.dealer.bust()
+
+                    print()
+                    print("Dealer busts!")
+                    self.display_driver.display()
+                    self.any_key()
+
                 dealer_playing = False
+
+                print()
+                print("Dealer stays.")
+                self.display_driver.display()
+                self.any_key()
+
                 break
-            self.any_key()
+
+            print()
+            print("Dealer hits!")
             self.table.dealer.hit(deck)
 
     def play_game(self):

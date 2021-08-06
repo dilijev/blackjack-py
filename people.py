@@ -43,12 +43,16 @@ class Dealer(Person):
     def __init__(self, deck: Deck) -> None:
         """inherit Person Class and set self.name as 'Dealer'"""
         super().__init__(deck)
+        self.blind_hand = True
 
     def report_visible_score(self) -> None:
         return super().report_first_card_score()
 
     def render_hand(self) -> str:
-        return self.hand.render_dealer_hand()
+        return self.hand.render_dealer_hand(self.blind_hand)
+
+    def unblind_hand(self) -> None:
+        self.blind_hand = False
 
 
 class Player(Person):

@@ -54,7 +54,7 @@ class Hand:
         self.add_card(deck)
         self.add_card(deck)
 
-    def get_total_value(self) -> int:
+    def get_total_value(self, blind: bool = False) -> int:
         """get total value of cards in the hand"""
         sum = 0
         aces = 0
@@ -64,7 +64,10 @@ class Hand:
             sum += value
             if value == 1:
                 aces += 1
-        if aces > 0 and sum < 21:
+            if blind:
+                break
+        while aces > 0 and (sum + 10) <= 21:
+            aces -= 1
             sum += 10
         return sum
 
@@ -74,10 +77,15 @@ class Hand:
     def get_num_cards(self) -> int:
         return len(self.cards)
 
-    def render_cards(self) -> str:
+    def render_cards(self, blind: bool = False) -> str:
         hand = '[ '
+        cards = 0
         for card in self.cards:
-            hand += str(card.get_value()) + ' '
+            cards += 1
+            if blind and cards > 1:
+                hand += '# '
+            else:
+                hand += str(card.get_value()) + ' '
         for x in range(5 - len(self.cards)):
             hand += '  '
         hand += ']'
@@ -90,10 +98,10 @@ class Hand:
         num_cards = self.get_num_cards()
         return f'{cards} ({num_cards}/5) = {score:2d}'
 
-    def render_dealer_hand(self) -> str:
+    def render_dealer_hand(self, blind: bool = False) -> str:
         # __ = (5/5) [ 1 2 3 4 5 ]
         score = self.get_total_value()
-        cards = self.render_cards()
+        cards = self.render_cards(blind)
         num_cards = self.get_num_cards()
         return f'{score:2d} = ({num_cards}/5) {cards}'
 
