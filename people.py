@@ -1,38 +1,38 @@
 from cards import *
 
 class Person:
-    def __init__(self, deck):
+    def __init__(self, deck: Deck) -> None:
         """set hand and get two initial cards from the deck"""
         self.hand = Hand()
         self.hand.add_card(deck)
         self.hand.add_card(deck)
 
-    def hit(self, deck):
+    def hit(self, deck: Deck) -> None:
         """add a card from the deck to hand"""
         self.hand.add_card(deck)
 
-    def get_num_cards(self):
+    def get_num_cards(self) -> int:
         return self.hand.get_num_cards()
 
-    def bust(self):
+    def bust(self) -> None:
         print('Bust!')
         self.hand = Hand()
 
-    def win(self):
+    def win(self) -> None:
         print('Win!')
         self.hand = Hand()
 
-    def is_bust(self):
+    def is_bust(self) -> bool:
         return self.hand.get_num_cards() == 0
 
-    def render_hand(self):
+    def render_hand(self) -> str:
         return self.hand.render_hand()
 
-    def report_score(self):
+    def report_score(self) -> int:
         """report total values of the hand"""
         return self.hand.get_total_value()
 
-    def report_first_card_score(self):
+    def report_first_card_score(self) -> int:
         value = self.hand.get_first_card().get_num_value()
         if value == 1:
             value += 10
@@ -40,19 +40,19 @@ class Person:
 
 
 class Dealer(Person):
-    def __init__(self, deck):
+    def __init__(self, deck: Deck) -> None:
         """inherit Person Class and set self.name as 'Dealer'"""
         super().__init__(deck)
 
-    def report_visible_score(self):
+    def report_visible_score(self) -> None:
         return super().report_first_card_score()
 
 
 class Player(Person):
-    def __init__(self, deck, name):
+    def __init__(self, deck: Deck, name: str) -> None:
         """inheirt Person Class and set self.name as what a user typed in"""
         super().__init__(deck)
         self.name = name
 
-    def get_name(self):
+    def get_name(self) -> None:
         return self.name

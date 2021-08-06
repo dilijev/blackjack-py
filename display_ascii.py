@@ -65,7 +65,7 @@ class AsciiGridDisplay(object):
         self.draw_vertical_line(row, column + width - 1, height, \
             character=vertical_character, end_character=corner_character)
 
-    def display(self):
+    def display(self) -> None:
         # TODO implement display, just print the thing
         for line in self.grid:
             print(line)

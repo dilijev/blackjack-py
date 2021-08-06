@@ -1,6 +1,4 @@
-from typing import Mapping
 from cards import *
-
 from control import BlackjackGame
 
 
