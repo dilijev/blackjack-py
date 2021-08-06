@@ -26,7 +26,7 @@ class Person:
         return self.hand.get_num_cards() == 0
 
     def render_hand(self) -> str:
-        return self.hand.render_hand()
+        return self.hand.render_player_hand()
 
     def report_score(self) -> int:
         """report total values of the hand"""
@@ -47,6 +47,9 @@ class Dealer(Person):
     def report_visible_score(self) -> None:
         return super().report_first_card_score()
 
+    def render_hand(self) -> str:
+        return self.hand.render_dealer_hand()
+
 
 class Player(Person):
     def __init__(self, deck: Deck, name: str) -> None:
@@ -56,3 +59,6 @@ class Player(Person):
 
     def get_name(self) -> None:
         return self.name
+
+    def render_hand(self) -> str:
+        return self.hand.render_player_hand()

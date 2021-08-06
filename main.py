@@ -1,7 +1,7 @@
 from cards import *
-from control import BlackjackGame
+from control import BlackJackController
 
 
 if __name__ == '__main__':
-    game = BlackjackGame()
+    game = BlackJackController()
     game.play_game()
