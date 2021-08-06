@@ -1,5 +1,5 @@
 from cards import *
-from people import *
+from people import Dealer, Player
 
 class BlackjackGame:
     def __init__(self):
@@ -14,6 +14,9 @@ class BlackjackGame:
         player = Player(self.deck, 'Player1')
         self.players.append(player)
         self.dealer = Dealer(self.deck)
+
+    def any_key(self) -> None:
+        input('Press any key to continue...')
 
     def prompt_user(self, prompt, answers = None):
         if answers == None:
@@ -90,6 +93,7 @@ class BlackjackGame:
                     self.dealer.bust()
                 dealer_playing = False
                 break
+            self.any_key()
             self.dealer.hit(deck)
 
     def play_game(self):
