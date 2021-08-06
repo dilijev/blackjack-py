@@ -1,8 +1,8 @@
 # TODO implement display logic in a single class here, think about being replaceable
-# 1. interactive CLI line-based (the usual game mode basic implementation)
+# 1. interactive CLI line-based (the usual mode basic implementation)
 # 2. interactive CLI with ASCII-art display
 
-from control import BlackjackGame
+from table import BlackJackTable
 from display_ascii import AsciiGridDisplay
 
 
@@ -42,8 +42,8 @@ class BlackJackTableAsciiGridDisplayDriver(object):
 
     HEIGHT_PLAYER = 3
 
-    def __init__(self, game: BlackjackGame) -> None:
-        self.game = game
+    def __init__(self, table: BlackJackTable) -> None:
+        self.table = table
         self.grid_display = None
 
         self.needs_render = True
@@ -72,7 +72,7 @@ class BlackJackTableAsciiGridDisplayDriver(object):
     def configure(self) -> None:
         # get width in columns
         max_player_name_length = 0
-        for player in self.game.players:
+        for player in self.table.players:
             player_name_length = len(player.get_name())
             if player_name_length > max_player_name_length:
                 max_player_name_length = player_name_length
@@ -170,7 +170,7 @@ class BlackJackTableAsciiGridDisplayDriver(object):
 
         # TODO update based on number of hands when splitting is implemented
         # self.height = len(hands) * 3 + 2
-        self.height = len(self.game.players) * 3 + 1
+        self.height = len(self.table.players) * 3 + 1
         self.dealer_row = self.height // 2 - 1
 
         self.grid_display = AsciiGridDisplay(self.height, self.width)
@@ -192,7 +192,7 @@ class BlackJackTableAsciiGridDisplayDriver(object):
         # player area top line spacer
         self.grid_display.draw_horizontal_line(
             row=0, column=0, width=self.width_player_field)
-        for x in range(len(self.game.players)):
+        for x in range(len(self.table.players)):
             # line after every player
             row = (x + 1) * BlackJackTableAsciiGridDisplayDriver.HEIGHT_PLAYER
             self.grid_display.draw_horizontal_line(
@@ -216,14 +216,14 @@ class BlackJackTableAsciiGridDisplayDriver(object):
             width=self.dealer_name_length)
 
     def render_names(self) -> None:
-        for x in range(len(self.game.players)):
-            player = self.game.players[x]
+        for x in range(len(self.table.players)):
+            player = self.table.players[x]
             name = player.get_name()
             row = 1 + x * BlackJackTableAsciiGridDisplayDriver.HEIGHT_PLAYER
             self.grid_display.set_text(
                 row=row, column = self.start_player_field, text=name)
         
-        # dealer_name = self.game.dealer.get_name()
+        # dealer_name = self.table.dealer.get_name()
         # TODO update logic for dealer name
         dealer_name = 'Dealer'
         self.grid_display.set_text(
@@ -233,7 +233,7 @@ class BlackJackTableAsciiGridDisplayDriver(object):
 
     def render_player_hands(self) -> None:
         index = 0
-        for player in self.game.players:
+        for player in self.table.players:
             for hand in [player.hand]:
                 status = hand.render_player_hand()
                 row = 1 + index * BlackJackTableAsciiGridDisplayDriver.HEIGHT_PLAYER
@@ -242,7 +242,7 @@ class BlackJackTableAsciiGridDisplayDriver(object):
                     text=status)
 
     def render_dealer_hand(self) -> None:
-        hand = self.game.dealer.hand
+        hand = self.table.dealer.hand
         status = hand.render_player_hand()
         row = self.dealer_row
         self.grid_display.set_text(
@@ -250,8 +250,8 @@ class BlackJackTableAsciiGridDisplayDriver(object):
             text=status)
 
     def render_pools(self) -> None:
-        for x in range(len(self.game.players)):
-            # player = self.game.players[x]
+        for x in range(len(self.table.players)):
+            # player = self.table.players[x]
             # TODO get money value from player
             money = 0
             money_string = f'${money:4d}'
@@ -261,7 +261,7 @@ class BlackJackTableAsciiGridDisplayDriver(object):
                 text=money_string)
 
     def render_bets(self) -> None:
-        for x in range(len(self.game.players)):
+        for x in range(len(self.table.players)):
             # TODO get bet value from player's hands
             money = 0
             money_string = f'${money:4d}'
@@ -271,7 +271,7 @@ class BlackJackTableAsciiGridDisplayDriver(object):
                 text=money_string)
 
     def render_double_down(self) -> None:
-        for x in range(len(self.game.players)):
+        for x in range(len(self.table.players)):
             # TODO get double-down bet value from player's hands
             # TODO change to no display if there's no double-down
             money = 0
@@ -307,9 +307,8 @@ class BlackJackTableAsciiGridDisplayDriver(object):
 
 
 if __name__ == '__main__':
-    game = BlackjackGame()
-    game.default_settings()
-    display_driver = BlackJackTableAsciiGridDisplayDriver(game)
+    table = BlackJackTable()
+    table.default_settings()
+    display_driver = BlackJackTableAsciiGridDisplayDriver(table)
     display_driver.render()
     display_driver.display()
-
